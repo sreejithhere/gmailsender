@@ -22,5 +22,33 @@ This application is a no frills utility to send mass emails through your persona
 - GMail does not provide any error message when the email failed to deliver.  So this utility will return success whether the mail got delivered or not
 
 ## Instructions for usage
+### Preparing GMail Credentials
 Before you can start using this application you need to generate an application specific password for your GMail account.
 You can get this by visiting [this](https://support.google.com/mail/answer/185833?hl=en-GB) help article and following the instructions there
+Remember the application password which you generate since it can be viewed only once
+
+### Preparing Fiels
+You need two files to run the utility
+- A CSV which contains the list of recipients
+- An HTML or text file containing the body of the email
+
+To prepare the CSV, you can use the *template.csv* file in the root folder.  Copy the file into a new file and add the recipient information.  Make sure that the first row is not altered in any way
+
+To prepare the HTML or text file, first create your template file.  The utility allows you to customise the mail for each recipient by dynamically changing the following
+- Title (Mr., Ms., Dr. etc.)
+- First name
+- Middle name
+- Last name
+- Full name (If this is provided, the other parts of name will be ignored)
+- Suffix (MD, IPS etc.)
+To use the customisation, edit your html file to mark the locations which should be dynamically filled
+using the information from the CSV.  You can do this by adding the placeholder string according to the 
+table below.  Make sure that the curly braces - "{" and "}" are not omitted and there is a space
+before and after the curly braces
+
+| Field | Place holder|
+|-------- |------------|
+| First name | {first_name} |
+|  
+
+
