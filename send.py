@@ -84,11 +84,14 @@ def get_parser() -> None:
     parser.add_argument('-e', '--error_file', action='store', required=False,
                         help='File to store recipients which failed', default='failed.csv')
     parser.add_argument('--format', action='store', required=False, default='html',
-                            help='Format of the email - html/text')
-    parser.add_argument('-v', action='store_const', const='info', dest='level', default='error')
-    parser.add_argument('-vv', action='store_const', const='debug', dest='level', default='error')
+                            help='Format of the email.  Should be either "html" or "text"')
+    parser.add_argument('-v', action='store_const', const='info', dest='level', default='error',
+                           help='Verbose output')
+    parser.add_argument('-vv', action='store_const', const='debug', dest='level', default='error',
+                            help="Very verbose output.  Debug information will be printed")
 
-    parser.add_argument('-b', '--background', action='store_const', const=True, dest='background', default=False)
+    parser.add_argument('-b', '--background', action='store_const', const=True, dest='background', default=False,
+                            help="Set this flag to send multiple messages parallely")
 
     return parser
 

@@ -39,7 +39,7 @@ To prepare the HTML or text file, first create your template file.  The utility 
 - First name
 - Middle name
 - Last name
-- Full name (If this is provided, the other parts of name will be ignored)
+- Full name (If this is provided, the other parts of name will be ignored.  If this is omitted, it will be constructed from the parts of name if required to be filled in the template)
 - Suffix (MD, IPS etc.)
 To use the customisation, edit your html file to mark the locations which should be dynamically filled
 using the information from the CSV.  You can do this by adding the placeholder string according to the 
@@ -48,7 +48,43 @@ before and after the curly braces
 
 | Field | Place holder|
 |-------- |------------|
+| Title	   | {name_prefix} |
 | First name | {first_name} |
-|  
+| Middle name | {middle_name} |
+| Last name | {last_name} |
+| Full name | {full_name} |
+| Suffix    | {name_suffix} |
+
+### Sending emails
+You can run the utility by running the script **send.py**.  The usage information is as below.
+You can see the same message by running
+`python send.py --help`
+
+```
+usage: send.py [-h] -u USERNAME -p PASSWORD -f FILENAME [-t TEMPLATE] -s
+               SUBJECT [-e ERROR_FILE] [--format FORMAT] [-v] [-vv] [-b]
+
+Send multiple emails with GMail
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USERNAME, --username USERNAME
+                        Username to use to send the emails
+  -p PASSWORD, --password PASSWORD
+                        Application password. Get from https://support.google.
+                        com/accounts/answer/185833?hl=en
+  -f FILENAME, --filename FILENAME
+                        CSV file with the the list of recipients
+  -t TEMPLATE, --template TEMPLATE
+                        Email template to use
+  -s SUBJECT, --subject SUBJECT
+                        Subject of the email
+  -e ERROR_FILE, --error_file ERROR_FILE
+                        File to store recipients which failed
+  --format FORMAT       Format of the email. Should be either "html" or "text"
+  -v                    Verbose output
+  -vv                   Very verbose output. Debug information will be printed
+  -b, --background      Set this flag to send multiple messages parallely
+```
 
 
