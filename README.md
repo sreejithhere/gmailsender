@@ -48,12 +48,12 @@ before and after the curly braces
 
 | Field | Place holder|
 |-------- |------------|
-| Title	   | {name_prefix} |
-| First name | {first_name} |
-| Middle name | {middle_name} |
-| Last name | {last_name} |
-| Full name | {full_name} |
-| Suffix    | {name_suffix} |
+| Title	   | %%name_prefix%% |
+| First name | %%first_name%% |
+| Middle name | %%middle_name%% |
+| Last name | %%last_name%% |
+| Full name | %%full_name%% |
+| Suffix    | %%name_suffix%% |
 
 ### Sending emails
 You can run the utility by running the script **send.py**.  The usage information is as below.

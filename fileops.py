@@ -1,6 +1,7 @@
 import os
 import csv
 import logging
+import re
 from typing import List
 
 from mailobjects import Recipient
@@ -10,6 +11,15 @@ recipient_info = ['name_prefix', 'name_suffix', 'first_name', 'last_name', 'full
 Recipients = List[Recipient]
 
 logger = logging.getLogger('fileops')
+
+# Regex for name replacement
+fn_r = re.compile("%%first_name%%")
+ln_r = re.compile("%%last_name%%")
+fu_r = re.compile("%%full_name%%")
+mn_r = re.compile("%%middle_name%%")
+np_r = re.compile("%%name_prefix%%")
+ns_r = re.compile("%%name_suffix%%")
+em_r = re.compile("%%email%%")
 
 class CSVFileProcessor:
     def __init__(self):
@@ -82,12 +92,19 @@ class TemplateFileProcessor:
         '''
         Replaces the place holders in the message with the recipient information
         '''
-        msg = self._template_message.format(name_prefix=recipient.name_prefix,
-        first_name=recipient.first_name,
-        middle_name=recipient.middle_name,
-        last_name=recipient.last_name,
-        full_name=recipient.full_name,
-        name_suffix=recipient.name_suffix)
+        msg = fn_r.sub(recipient.first_name, 
+                ln_r.sub(recipient.last_name,
+                    mn_r.sub(recipient.middle_name,
+                        fu_r.sub(recipient.full_name,
+                            np_r.sub(recipient.name_prefix,
+                                ns_r.sub(recipient.name_suffix,
+                                    self._template_message))))))
+        #msg = self._template_message.format(name_prefix=recipient.name_prefix,
+        #first_name=recipient.first_name,
+        #middle_name=recipient.middle_name,
+        #last_name=recipient.last_name,
+        #full_name=recipient.full_name,
+        #name_suffix=recipient.name_suffix)
         return msg
 
 
