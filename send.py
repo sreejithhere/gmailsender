@@ -113,7 +113,6 @@ if __name__ == '__main__':
         logger.debug("Sending emails to {}".format(r.email))
     logger.info("Sending emails to {} recipients".format(len(recipients)))
     template_handler = TemplateFileProcessor(arguments.template)
-    set_trace()
     handler = EventHandlers(error_file=arguments.error_file)
     gs = GmailSender(arguments.username, arguments.password, background=arguments.background,
     error_handler=handler.handle_error, success_handler=handler.handle_success)
