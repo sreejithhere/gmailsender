@@ -36,7 +36,7 @@ class CSVFileProcessor:
         recipients = []
         with open(filename, 'r') as csv_file:
             reader = csv.DictReader(csv_file)
-            for row in reader:
+            for i, row in enumerate(reader):
                 recipient = Recipient(row.get('first_name', ''),
                 row.get('last_name', ''),
                 row.get('middle_name', ''),
@@ -74,6 +74,27 @@ class CSVFileProcessor:
                 writer.writerows(r.to_dict() for r in recipients)
         except PermissionError as ex:
             raise FileWriteError(filename, str(ex))
+
+    def validate(self, filename: str) -> int:
+        if not os.path.isfile(filename):
+            raise FileNotfoundException(filename)
+        valid = 0
+        total = 0
+        try:
+            with open(filename, 'r') as csv_file:
+                reader = csv.DictReader(csv_file)
+                for num, row in enumerate(reader):
+                    total += 1
+                    try:
+                        _ = row.get('first_name', '')  # Do a dummy read
+                        logger.debug("Row {} with first name {} read".format(num, _))
+                        valid += 1
+                    except ex as Exception:
+                        logger.error("Error while reading row {}".format(num))
+        except:
+            logger.error("Error while opening the CSV for reading")
+        return valid, total
+
 
 
 class TemplateFileProcessor:
