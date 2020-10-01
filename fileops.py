@@ -34,7 +34,7 @@ class CSVFileProcessor:
             raise FileNotFoundException(filename)
         
         recipients = []
-        with open(filename, 'r') as csv_file:
+        with open(filename, 'r', encoding='utf-8') as csv_file:
             reader = csv.DictReader(csv_file)
             for i, row in enumerate(reader):
                 recipient = Recipient(row.get('first_name', ''),
@@ -81,7 +81,7 @@ class CSVFileProcessor:
         valid = 0
         total = 0
         try:
-            with open(filename, 'r') as csv_file:
+            with open(filename, 'r', encoding='utf-8') as csv_file:
                 reader = csv.DictReader(csv_file)
                 for num, row in enumerate(reader):
                     total += 1
