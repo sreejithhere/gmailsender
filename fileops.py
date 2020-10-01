@@ -134,21 +134,36 @@ class EventHandlers:
     def __init__(self,
                  log_failure: bool=True,
                  log_success: bool=True,
-                 log_failed_to_file: bool= True,
-                 error_file: str='',
+                 failed_log_file: str='',
+                 success_log_file: str='',
                  ):
         self.log_failure = log_failure
         self.log_success = log_success
-        self.log_failed_to_file = log_failure and log_failed_to_file
-        self.error_file = error_file
-        if self.log_failure and not self.error_file:
-            raise InvalidArgumentError('errro_file', '')
+        self.failed_log_file = failed_log_file
+        self.success_log_file = success_log_file
+        self.fail_logger = None
+        self.success_logger = None
+        if self.failed_log_file:
+            self.fail_logger = logging.getLogger()
+            self.fail_logger.propagate = False
+            self.fail_logger.handlers = []
+            handler = logging.FileHandler(self.failed_log_file)
+            self.fail_logger.addHandler(handler)
+        if self.success_log_file:
+            self.success_logger = logging.getLogger()
+            self.success_logger.propagate = False
+            handler = logging.FileHandler(self.success_log_file)
+            self.success_logger.handlers = []
+            self.success_logger.addHandler(handler)
+            self.success_logger.setLevel(logging.INFO)
     
     def handle_error(self, recipient: Recipient) -> None:
-        logger.error("Error while sending email to {}".format(recipient.email))
-        if self.log_failed_to_file:
-            writer = CSVFileProcessor()
-            writer.write(self.error_file, True, [recipient])
+        if self.log_failure:
+            logger.error("Error while sending email to {}".format(recipient.email))
+            if self.fail_logger:
+                self.fail_logger.error(str(recipient))
         
     def handle_success(self, recipient: Recipient) -> None:
         logger.info("Successfully sent mail to {} - {}".format(recipient.index, recipient.email))
+        if self.success_logger:
+            self.success_logger.info("{} - {}".format(recipient.index, recipient.email))

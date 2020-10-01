@@ -2,6 +2,7 @@ import sys
 import argparse
 import logging
 from pdb import set_trace
+import datetime
 
 from errors import InvalidArgumentError
 from fileops import CSVFileProcessor, TemplateFileProcessor, EventHandlers
@@ -23,7 +24,8 @@ class Arguments:
                         error_file: str,
                         log_level: str='error',
                         format: str='html',
-                        background: bool=False):
+                        background: bool=False,
+                        log_file: str=''):
         self.username = username
         self.password = password
         self.filename = filename
@@ -33,6 +35,7 @@ class Arguments:
         self._log_level = log_level
         self.format = format
         self.background=background
+        self.log_file = log_file
 
 
     @property
@@ -93,6 +96,8 @@ def get_parser() -> None:
 
     parser.add_argument('-b', '--background', action='store_const', const=True, dest='background', default=False,
                             help="Set this flag to send multiple messages parallely")
+    parser.add_argument('-l', '--log', action='store', dest='log_file', default='debug.log',
+                            help="Log file to which successful recipients will be added")
 
     return parser
 
@@ -102,7 +107,8 @@ if __name__ == '__main__':
     parse_results = parser.parse_args()
     arguments = Arguments(parse_results.username, parse_results.password,
     parse_results.filename, parse_results.template, parse_results.subject,
-                parse_results.error_file, parse_results.level, parse_results.format, parse_results.background)
+                parse_results.error_file, parse_results.level, parse_results.format, parse_results.background,
+                parse_results.log_file)
     arguments.validate()
     logging.basicConfig(level=arguments.log_level)
     logger.debug(str(arguments))
@@ -113,7 +119,14 @@ if __name__ == '__main__':
     total = len(recipients)
     logger.info("Sending emails to {} recipients".format(len(recipients)))
     template_handler = TemplateFileProcessor(arguments.template)
-    handler = EventHandlers(error_file=arguments.error_file)
+
+    # Update the logs
+    with open('./error.log', 'a') as ef:
+        ef.write("--------------------- {} ---------------------\n".format(datetime.datetime.now().strftime("%D %H%T")))
+
+    with open('./success.log', 'a') as ef:
+        ef.write("--------------------- {} ---------------------\n".format(datetime.datetime.now().strftime("%D %H%T")))
+    handler = EventHandlers(failed_log_file='./error.log', success_log_file='./success.log')
     gs = GmailSender(arguments.username, arguments.password, background=arguments.background,
     error_handler=handler.handle_error, success_handler=handler.handle_success)
     payload_list = [Payload(r, arguments.subject, template_handler.generate_message(r)) \
