@@ -37,7 +37,8 @@ class CSVFileProcessor:
         with open(filename, 'r', encoding='utf-8') as csv_file:
             reader = csv.DictReader(csv_file)
             for i, row in enumerate(reader):
-                recipient = Recipient(row.get('first_name', ''),
+                recipient = Recipient(i + 1, 
+                        row.get('first_name', ''),
                 row.get('last_name', ''),
                 row.get('middle_name', ''),
                 row.get('full_name', ''),
@@ -150,4 +151,4 @@ class EventHandlers:
             writer.write(self.error_file, True, [recipient])
         
     def handle_success(self, recipient: Recipient) -> None:
-        logger.info("Successfully sent mail to {}".format(recipient.email))
+        logger.info("Successfully sent mail to {} - {}".format(recipient.index, recipient.email))

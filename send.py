@@ -10,6 +10,7 @@ from mailobjects import Payload
 
 logger = logging.getLogger('Main')
 
+
 class Arguments:
     '''
     Holder for the command line arguments
@@ -110,15 +111,12 @@ if __name__ == '__main__':
     csv_handler = CSVFileProcessor()
     recipients = csv_handler.parse(arguments.filename)
     total = len(recipients)
-    for i, r in enumerate(recipients):
-        logger.debug("{}/{}: Sending emails to {}".format(i, total, r.first_name))
-        if i > 170: break
     logger.info("Sending emails to {} recipients".format(len(recipients)))
     template_handler = TemplateFileProcessor(arguments.template)
     handler = EventHandlers(error_file=arguments.error_file)
     gs = GmailSender(arguments.username, arguments.password, background=arguments.background,
     error_handler=handler.handle_error, success_handler=handler.handle_success)
-   # payload_list = [Payload(r, arguments.subject, template_handler.generate_message(r)) \
-                       # for r in recipients]
-   # gs.send_bulk(payload_list)
+    payload_list = [Payload(r, arguments.subject, template_handler.generate_message(r)) \
+                       for r in recipients]
+    gs.send_bulk(payload_list)
     

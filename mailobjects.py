@@ -7,6 +7,7 @@ class Recipient:
     Reprsents a single recipient of the email
     '''
     def __init__(self, 
+                    index: int,
                     first_name: str='',
                     last_name: str='',
                     middle_name: str='',
@@ -14,6 +15,7 @@ class Recipient:
                     name_prefix: str='',
                     name_suffix: str='',
                     email=''):
+        self.index = index
         self._first_name = first_name
         self._last_name = last_name
         self._middle_name = middle_name
@@ -61,7 +63,7 @@ class Recipient:
         return self._email
 
     def __str__(self):
-        return "Recipient: {}".format(self.full_name)
+        return "Recipient: {} - {}".format(self.index, self.full_name)
 
     def to_dict(self) -> dict:
         return {
